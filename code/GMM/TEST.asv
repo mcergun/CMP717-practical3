@@ -1,0 +1,86 @@
+% example to compute likelihoods
+
+nameIm = 'image.bmp';
+nameBoundary = 'boundary.bmp';
+
+% some GMM settings
+init = 1;
+p = 0;
+m = 0;
+C = 0;
+sigma = 0;
+options.nComponents = 10; 
+options.iterations = 2;
+options.init = 0; 
+options.method = 'kmeans';                      				    
+options.covarType = 'full';
+options.min_var = (1/255)^2.0;
+
+% load data
+im = double(imread(nameIm))/255;
+[M,N,S] = size(im);
+imr = im(:,:,1);
+img = im(:,:,2);
+imb = im(:,:,3);
+boundary = imread(nameBoundary);
+
+% get GMMs
+indexF = find(boundary==255);
+indexB = find(boundary==64);
+
+dataF = zeros(3,size(indexF,1));
+dataF(1,:) = imr(indexF);
+dataF(2,:) = img(indexF);
+dataF(3,:) = imb(indexF);
+
+dataB = zeros(3,size(indexB,1));
+dataB(1,:) = imr(indexB);
+dataB(2,:) = img(indexB);
+dataB(3,:) = imb(indexB);
+
+[pF, mF, CF] = ComputeGMM_cr( dataF, options, init, p, m, C, sigma);
+[pB, mB, CB] = ComputeGMM_cr( dataB, options, init, p, m, C, sigma);
+
+% visualize GMMs
+PlotColourSpace_vs2(dataF, dataB, pF, mF, CF, pB, mB, CB);
+
+% now evaluate the GMM
+data = [imr(:)';img(:)';imb(:)']; % in vector form
+fLikeVec = EvGMM_sara(data, pF, mF, CF);
+bLikeVec = EvGMM_sara(data, pB, mB, CB);
+
+fLike = reshape(fLikeVec,[M,N]);
+bLike = reshape(bLikeVec,[M,N]);
+
+figure(1)
+imshow(im);
+
+figure(2)
+hm1 = fLike; 
+imagesc(hm1)
+colorbar;
+colormap(jet)
+title('-log likelihood Fgd');
+
+figure(3)
+hm1 = bLike; 
+imagesc(hm1)
+colorbar;
+colormap(jet)
+title('-log likelihood Bgd');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
