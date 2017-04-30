@@ -1,7 +1,10 @@
 % example to compute likelihoods
 
-nameIm = '../data/starfish.bmp';
-nameUser = '../data/starfishUser.bmp';
+folder_path = '../data';
+image_name = 'wall.bmp';
+nameIm = fullfile(folder_path, image_name);
+
+nameUser = strrep(nameIm, '.bmp', 'User.bmp');
 
 %-----------------------------------
 % Settings
