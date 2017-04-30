@@ -1,0 +1,16 @@
+../data/sobel_baseline_eval/
+Boundary
+ODS: F( 0.60, 0.43 ) = 0.50   [th = 0.17]
+Area_PR = 0.34
+
+
+../data/canny_baseline_eval/
+Boundary
+ODS: F( 0.67, 0.52 ) = 0.59   [th = 0.19]
+Area_PR = 0.52
+
+
+../data/sketch_tokens_eval/
+Boundary
+ODS: F( 0.72, 0.51 ) = 0.60   [th = 0.65]
+Area_PR = 0.44

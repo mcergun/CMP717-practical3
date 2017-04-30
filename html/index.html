@@ -1,0 +1,293 @@
+<html>
+<head>
+<title>CMP717 Practical 2</title>
+<link href='http://fonts.googleapis.com/css?family=Nunito:300|Crimson+Text|Droid+Sans+Mono' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" title="Default" href="styles/github.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>  
+
+<link rel="stylesheet" href="highlighting/styles/default.css">
+<script src="highlighting/highlight.pack.js"></script>
+
+<style type="text/css">
+body {
+	margin: 0px;
+	width: 100%;
+	font-family: 'Crimson Text', serif;
+	font-size: 20px;
+	background: #fcfcfc;
+}
+h1 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 28px;
+	margin: 25px 0px 0px 0px;
+	text-transform: lowercase;
+
+}
+
+h2 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 32px;
+	margin: 15px 0px 35px 0px;
+	color: #333;	
+	word-spacing: 3px;
+}
+
+h3 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 26px;
+	margin: 10px 0px 10px 0px;
+	color: #333;
+	word-spacing: 2px;
+}
+h4 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 22px;
+	margin: 10px 0px 10px 0px;
+	color: #333;
+	word-spacing: 2px;
+}
+
+h5 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 18px;
+	margin: 10px 0px 10px 0px;
+	color: #111;
+	word-spacing: 2px;
+}
+
+p, li {
+	color: #444;
+}
+
+a {
+	color: #DE3737;
+}
+
+.container {
+	margin: 0px auto 0px auto;
+	width: 1160px;
+}
+
+#header {
+	background: #333;
+	width: 100%;
+}
+
+#headersub {
+	color: #ccc;
+	width: 960px;
+	margin: 0px auto 0px auto;
+	padding: 20px 0px 20px 0px;
+}
+
+.chart {
+	width: 480px;
+}
+.lol {
+	font-size: 16px;
+	color: #888;
+	font-style: italic;
+}
+.sep {
+	height: 1px;
+	width: 100%;
+	background: #999;
+	margin: 20px 0px 20px 0px;
+}
+.footer{
+	font-size: 16px;
+}
+.latex {
+	width: 100%;
+}
+
+.latex img {
+	display: block;
+	margin: 0px auto 0px auto;
+}
+
+pre {
+	font-family: 'Droid Sans Mono';
+	font-size: 14px;
+}
+
+table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+table td img {
+  text-align: center;
+  vertical-align: middle;
+}
+
+#contents a {
+}
+</style>
+<script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+</script>
+</head>
+<body>
+<div id="header" >
+<div id="headersub">
+<h1>Mert Can Ergun <span style="color: #DE3737">(N16127532)</span></h1>
+</div>
+</div>
+<div class="container">
+
+<h2>CMP 717 - Practical 3: Segmenting images using Markov Random Fields</h2>
+
+<!-- <div style="float: right; padding: 20px">
+<img src="placeholder.jpg" />
+<p style="font-size: 14px">Example of a right floating element.</p>
+</div> -->
+<h3> Problem  1.1</h3>
+<p> In this part, I have used 4 different images. I tried to choose them with different features. Below you can see the images, their bg/fg maps and algorithm results.</p>
+<table border=1>
+<tr>
+<td>Lena, similar colors, distinctive textures</td>
+<td>Caterpillar, distinctive colors, fuzzy outline</td>
+</tr>
+<tr>
+<td>
+<a href="../data/lena.bmp"><img src="../data/lena.bmp" width="30%"/></a>
+<a href="../data/lenaUser.bmp"><img src="../data/lenaUser.bmp" width="30%"/></a>
+<a href="../data/lenaOut.bmp"><img src="../data/lenaOut.bmp" width="30%"/></a>
+</td>
+<td>
+<a href="../data/caterpillar.bmp"><img src="../data/caterpillar.bmp" width="30%"/></a>
+<a href="../data/caterpillarUser.bmp"><img src="../data/caterpillarUser.bmp" width="30%"/></a>
+<a href="../data/caterpillarOut.bmp"><img src="../data/caterpillarOut.bmp" width="30%"/></a>
+</td>
+</tr>
+<tr>
+<td>Kingfisher, some color similarities, distinctive textures</td>
+<td>Wall, similar colors, similar textures</td>
+</tr>
+<tr>
+<td>
+<a href="../data/kingfisher.bmp"><img src="../data/kingfisher.bmp" width="30%"/></a>
+<a href="../data/kingfisherUser.bmp"><img src="../data/kingfisherUser.bmp" width="30%"/></a>
+<a href="../data/kingfisherOut.bmp"><img src="../data/kingfisherOut.bmp" width="30%"/></a>
+</td>
+<td>
+<a href="../data/wall.bmp"><img src="../data/wall.bmp" width="30%"/></a>
+<a href="../data/wallUser.bmp"><img src="../data/wallUser.bmp" width="30%"/></a>
+<a href="../data/wallOut.bmp"><img src="../data/wallOut.bmp" width="30%"/></a>
+</td>
+</tr>
+</table>
+<p> Using another script(results/process_results.m) I have plotted PSNR improvement of K-SVD method versus various sigma values.</p>
+<p> I have set iteration count to 25 and modified Train_Dictionary function to report time spent. Then I have collected those data and parsed it with cardinality_cost.m. Using those data, I have decided to use 8 iterations for my tests. The output graphs from my parser can be seen below:</p>
+
+<table border=1>
+<tr>
+<td>Lena, similar colors, distinctive textures</td>
+<td>Caterpillar, distinctive colors, fuzzy outline</td>
+</tr>
+<tr>
+<td>
+<a href="../data/lena.bmp"><img src="../data/lena.bmp" width="40%"/></a>
+<a href="../data/lenaUser.bmp"><img src="../data/lenaUser.bmp" width="40%"/></a>
+</td>
+<td>
+<a href="../results/output_plots/sigmaXatoms81size4.png"><img src="../results/output_plots/sigmaXatoms81size4.png" width="40%"/></a>
+<a href="../results/output_plots/sigmaXatoms81size8.png"><img src="../results/output_plots/sigmaXatoms81size8.png" width="40%"/></a>
+</td>
+</tr>
+<tr>
+<td>Kingfisher, some color similarities, distinctive textures</td>
+<td>Wall, similar colors, similar textures</td>
+</tr>
+<tr>
+<td>
+<a href="../results/output_plots/sigmaXatoms121size4.png"><img src="../results/output_plots/sigmaXatoms121size4.png" width="40%"/></a>
+<a href="../results/output_plots/sigmaXatoms121size8.png"><img src="../results/output_plots/sigmaXatoms121size8.png" width="40%"/></a>
+</td>
+<td>
+<a href="../results/output_plots/sigmaXatoms144size4.png"><img src="../results/output_plots/sigmaXatoms144size4.png" width="40%"/></a>
+<a href="../results/output_plots/sigmaXatoms144size8.png"><img src="../results/output_plots/sigmaXatoms144size8.png" width="40%"/></a>
+</td>
+</tr>
+</table>
+
+<p> From these results I can say that to get a good result from K-SVD, we need to have: </p>
+
+<ol>
+<li>high number of atoms</li>
+<li>a large patch size</li>
+</ol>
+
+<p> But choosing a high number of atoms alone doesn't cut it, either. As results show, a large number of atoms with a small patch gives less performance than other methods.</p>
+
+<h3> Problem  1.2</h3>
+<p> For this part, I have introduced 2 new parameters for <b>param</b> variable; <b>param.externalTrain</b> and <b>param.externalTrainPath</b>. The parameters allow us to control training behaviour. If externalTraining is set, then images in externalTrainingPath are read and their patches are used instead of original images.</p>
+<p> I have created an extra function <b>generate_external_patches</b> to generate image patches from the external directory. As computation is a big problem, for my tests I just used 4 images found on the internet. Then from my runner script (main_p12.m) I set parameters accordingly and acquired results.</p>
+<p> For example, below is a dramatic result. I have used just 1 image (fan_eroded.png) of size 512x512 for external training data. Then I used original image itself. Since training image has no useful patch information about the noisy image, the results are not as good as original one:</p>
+<table border=1>
+<tr>
+<td>External Training with fan_eroded.png only</td>
+<td>Original Training Method</td>
+</tr>
+<tr>
+<td>
+<a href="../results/external_training/fan_eroded_training_dictionary.png"><img src="../results/external_training/fan_eroded_training_dictionary.png" width="40%"/></a>
+<a href="../results/external_training/fan_eroded_training_out.png"><img src="../results/external_training/fan_eroded_training_out.png" width="40%"/></a>
+</td>
+<td>
+<a href="../results/external_training/self_training_dictionary.png"><img src="../results/external_training/self_training_dictionary.png" width="40%"/></a>
+<a href="../results/external_training/self_training_out.png"><img src="../results/external_training/self_training_out.png" width="40%"/></a>
+</td>
+</tr>
+</table>
+<p> In the table below, full training data is used. The results are not as bad as our last case, but external tranining data is inferior (or equal at best) to original image training data.</p>
+<table border=1>
+<tr>
+<td>External Training with full data 6 images(sigma 20, 40)</td>
+<td>Original Training Method(sigma 20, 40)</td>
+</tr>
+<tr>
+<td>
+<a href="../results/external_training/fullset_training_output_20.png"><img src="../results/external_training/fullset_training_output_20.png" width="40%"/></a>
+<a href="../results/external_training/fullset_training_output_40.png"><img src="../results/external_training/fullset_training_output_40.png" width="40%"/></a>
+</td>
+<td>
+<a href="../results/external_training/self_training_out.png"><img src="../results/external_training/self_training_out.png" width="40%"/></a>
+<a href="../results/external_training/self_training_out_40.png"><img src="../results/external_training/self_training_out_40.png" width="40%"/></a>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../results/external_training/fullset_training_output_20_2.png"><img src="../results/external_training/fullset_training_output_20_2.png" width="40%"/></a>
+<a href="../results/external_training/fullset_training_output_40_2.png"><img src="../results/external_training/fullset_training_output_40_2.png" width="40%"/></a>
+</td>
+<td>
+<a href="../results/external_training/self_training_out_20_2.png"><img src="../results/external_training/self_training_out_20_2.png" width="40%"/></a>
+<a href="../results/external_training/self_training_out_40_2.png"><img src="../results/external_training/self_training_out_40_2.png" width="40%"/></a>
+</td>
+</tr>
+<tr>
+<td>
+<a href="../results/external_training/fullset_training_output_20_3.png"><img src="../results/external_training/fullset_training_output_20_3.png" width="40%"/></a>
+<a href="../results/external_training/fullset_training_output_40_3.png"><img src="../results/external_training/fullset_training_output_40_3.png" width="40%"/></a>
+</td>
+<td>
+<a href="../results/external_training/self_training_out_20_3.png"><img src="../results/external_training/self_training_out_20_3.png" width="40%"/></a>
+<a href="../results/external_training/self_training_out_40_3.png"><img src="../results/external_training/self_training_out_40_3.png" width="40%"/></a>
+</td>
+</tr>
+</table>
+</br>
+<h3> Conclusion</h3>
+<p> In the first part we have seen that K-SVD is dependant on initial parameters and their accordance to the input image. If correct parameters are selected, improvements against DCT with overlap method can exceed 1.5dB mark. But this property is a double edged sword, if bad parameters are selected, then the results are inferior to DCT with overlap method.</p>
+<p> On the second part we have seen that K-SVD depends heavily on training data. The bad performance of external training data is mainly caused by limited dataset and low iteration counts. If training data was large enough and we could optimize it for a long time, better results could be acquired from external dataset, but the need to find optimal dataset for each input image is an ill-posed problem.</p>
+
+</div>
+</body>
+</html>
