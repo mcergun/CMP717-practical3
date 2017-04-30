@@ -1,10 +1,11 @@
 % example to compute likelihoods
 
 folder_path = '../data';
-image_name = 'wall.bmp';
+image_name = 'kingFisher.bmp';
 nameIm = fullfile(folder_path, image_name);
 
 nameUser = strrep(nameIm, '.bmp', 'User.bmp');
+nameOut = strrep(nameIm, '.bmp', 'Out.bmp');
 
 %-----------------------------------
 % Settings
@@ -171,6 +172,7 @@ if (visualizeFinalResults)
 
     title('final segmentation result');
     
+    imwrite(bkgIm, nameOut);
 end
 
   
