@@ -187,7 +187,8 @@ table td img {
 </td>
 </tr>
 </table>
-<p> I thought the hardest scenarios were Wall and Caterpillar but caterpillar turned out better than I expected. </p>
+<p> Checking histogram plots of 4 scenarios reveals that the method relies mostly on color distribution of the foreground/background areas. If various areas of the images are similar colorwise, the output results are not satisfactory. </p>
+<p> I thought the hardest scenarios were Wall and Caterpillar but caterpillar turned out better than I expected. Since I only chose body of the caterpillar as foreground object, model discarded thin hair around the caterpillar. </p>
 <p> For caterpillar, since the texture and color of thin hair around the caterpillar is very different from rest of its body and the background, it is easy to select it as background and background. </p>
 <p> For wall, whole image is textured and textures are somewhat similar. The general color structure and intensities are also similar. These two properties make this image a hard case for general gaussian mixture algorithm. I have altered foreground/background map to improve the performance, but it hasn't improved by a whole lot; wall texture can still be seen in the foreground extracted image, and frame isn't crisp clear, either.</p>
 <table border=1>
@@ -198,110 +199,10 @@ table td img {
 </td>
 </tr>
 </table>
-<p> I have set iteration count to 25 and modified Train_Dictionary function to report time spent. Then I have collected those data and parsed it with cardinality_cost.m. Using those data, I have decided to use 8 iterations for my tests. The output graphs from my parser can be seen below:</p>
-
-<table border=1>
-<tr>
-<td>Lena, similar colors, distinctive textures</td>
-<td>Caterpillar, distinctive colors, fuzzy outline</td>
-</tr>
-<tr>
-<td>
-<a href="pics/lena.jpg" target="_blank"><img src="pics/lena.jpg" width="40%"/></a>
-<a href="pics/lenaUser.jpg" target="_blank"><img src="pics/lenaUser.jpg" width="40%"/></a>
-</td>
-<td>
-<a href="../results/output_plots/sigmaXatoms81size4.png"><img src="../results/output_plots/sigmaXatoms81size4.png" width="40%"/></a>
-<a href="../results/output_plots/sigmaXatoms81size8.png"><img src="../results/output_plots/sigmaXatoms81size8.png" width="40%"/></a>
-</td>
-</tr>
-<tr>
-<td>Kingfisher, some color similarities, distinctive textures</td>
-<td>Wall, similar colors, similar textures</td>
-</tr>
-<tr>
-<td>
-<a href="../results/output_plots/sigmaXatoms121size4.png"><img src="../results/output_plots/sigmaXatoms121size4.png" width="40%"/></a>
-<a href="../results/output_plots/sigmaXatoms121size8.png"><img src="../results/output_plots/sigmaXatoms121size8.png" width="40%"/></a>
-</td>
-<td>
-<a href="../results/output_plots/sigmaXatoms144size4.png"><img src="../results/output_plots/sigmaXatoms144size4.png" width="40%"/></a>
-<a href="../results/output_plots/sigmaXatoms144size8.png"><img src="../results/output_plots/sigmaXatoms144size8.png" width="40%"/></a>
-</td>
-</tr>
-</table>
-
-<p> From these results I can say that to get a good result from K-SVD, we need to have: </p>
-
-<ol>
-<li>high number of atoms</li>
-<li>a large patch size</li>
-</ol>
-
-<p> But choosing a high number of atoms alone doesn't cut it, either. As results show, a large number of atoms with a small patch gives less performance than other methods.</p>
-
-<h3> Problem  1.2</h3>
-<p> For this part, I have introduced 2 new parameters for <b>param</b> variable; <b>param.externalTrain</b> and <b>param.externalTrainPath</b>. The parameters allow us to control training behaviour. If externalTraining is set, then images in externalTrainingPath are read and their patches are used instead of original images.</p>
-<p> I have created an extra function <b>generate_external_patches</b> to generate image patches from the external directory. As computation is a big problem, for my tests I just used 4 images found on the internet. Then from my runner script (main_p12.m) I set parameters accordingly and acquired results.</p>
-<p> For example, below is a dramatic result. I have used just 1 image (fan_eroded.png) of size 512x512 for external training data. Then I used original image itself. Since training image has no useful patch information about the noisy image, the results are not as good as original one:</p>
-<table border=1>
-<tr>
-<td>External Training with fan_eroded.png only</td>
-<td>Original Training Method</td>
-</tr>
-<tr>
-<td>
-<a href="../results/external_training/fan_eroded_training_dictionary.png"><img src="../results/external_training/fan_eroded_training_dictionary.png" width="40%"/></a>
-<a href="../results/external_training/fan_eroded_training_out.png"><img src="../results/external_training/fan_eroded_training_out.png" width="40%"/></a>
-</td>
-<td>
-<a href="../results/external_training/self_training_dictionary.png"><img src="../results/external_training/self_training_dictionary.png" width="40%"/></a>
-<a href="../results/external_training/self_training_out.png"><img src="../results/external_training/self_training_out.png" width="40%"/></a>
-</td>
-</tr>
-</table>
-<p> In the table below, full training data is used. The results are not as bad as our last case, but external tranining data is inferior (or equal at best) to original image training data.</p>
-<table border=1>
-<tr>
-<td>External Training with full data 6 images(sigma 20, 40)</td>
-<td>Original Training Method(sigma 20, 40)</td>
-</tr>
-<tr>
-<td>
-<a href="../results/external_training/fullset_training_output_20.png"><img src="../results/external_training/fullset_training_output_20.png" width="40%"/></a>
-<a href="../results/external_training/fullset_training_output_40.png"><img src="../results/external_training/fullset_training_output_40.png" width="40%"/></a>
-</td>
-<td>
-<a href="../results/external_training/self_training_out.png"><img src="../results/external_training/self_training_out.png" width="40%"/></a>
-<a href="../results/external_training/self_training_out_40.png"><img src="../results/external_training/self_training_out_40.png" width="40%"/></a>
-</td>
-</tr>
-<tr>
-<td>
-<a href="../results/external_training/fullset_training_output_20_2.png"><img src="../results/external_training/fullset_training_output_20_2.png" width="40%"/></a>
-<a href="../results/external_training/fullset_training_output_40_2.png"><img src="../results/external_training/fullset_training_output_40_2.png" width="40%"/></a>
-</td>
-<td>
-<a href="../results/external_training/self_training_out_20_2.png"><img src="../results/external_training/self_training_out_20_2.png" width="40%"/></a>
-<a href="../results/external_training/self_training_out_40_2.png"><img src="../results/external_training/self_training_out_40_2.png" width="40%"/></a>
-</td>
-</tr>
-<tr>
-<td>
-<a href="../results/external_training/fullset_training_output_20_3.png"><img src="../results/external_training/fullset_training_output_20_3.png" width="40%"/></a>
-<a href="../results/external_training/fullset_training_output_40_3.png"><img src="../results/external_training/fullset_training_output_40_3.png" width="40%"/></a>
-</td>
-<td>
-<a href="../results/external_training/self_training_out_20_3.png"><img src="../results/external_training/self_training_out_20_3.png" width="40%"/></a>
-<a href="../results/external_training/self_training_out_40_3.png"><img src="../results/external_training/self_training_out_40_3.png" width="40%"/></a>
-</td>
-</tr>
-</table>
 </br>
 <h3> Conclusion</h3>
 <p> In the first part we have seen that K-SVD is dependant on initial parameters and their accordance to the input image. If correct parameters are selected, improvements against DCT with overlap method can exceed 1.5dB mark. But this property is a double edged sword, if bad parameters are selected, then the results are inferior to DCT with overlap method.</p>
 <p> On the second part we have seen that K-SVD depends heavily on training data. The bad performance of external training data is mainly caused by limited dataset and low iteration counts. If training data was large enough and we could optimize it for a long time, better results could be acquired from external dataset, but the need to find optimal dataset for each input image is an ill-posed problem.</p>
-
 </div>
 </body>
 </html>
